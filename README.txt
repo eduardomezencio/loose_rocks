@@ -17,5 +17,5 @@ https://forum.minetest.net/viewtopic.php?f=15&t=6346
 -------------------------------------------------------------------------------
 
 This mod adds Loose Rocks to Minetest. They generate naturally on the surface
-of the world and can be collected with bare hand. 4 Loose Rocks agganged in a
+of the world and can be collected with bare hand. 4 Loose Rocks arranged in a
 2x2 grid can be crafted into a Cobblestone.
