@@ -76,45 +76,54 @@ minetest.register_craft({
 -- Map Generation
 
 minetest.register_on_generated(function(minp, maxp, seed)
-	if maxp.y >= 0 and maxp.y < 200 then
-		math.randomseed(seed+minp.x+minp.z*666)
-		local perlin = minetest.get_perlin(666, 3, 0.6, 100)
-		local heightmap = minetest.get_mapgen_object("heightmap")
 
-		-- Assume X and Z lengths are equal
-		local chunk = (maxp.x-minp.x+1) -- Probably 80
-		local divs = 5
-		local divlen = chunk / divs -- 16, if chunk is 80
-		for divx = 0, divs - 1 do
-		for divz = 0, divs - 1 do
-			local x0 = minp.x + math.floor((divx)*divlen)
-			local z0 = minp.z + math.floor((divz)*divlen)
-			local x1 = minp.x + math.floor((divx+1)*divlen) - 1
-			local z1 = minp.z + math.floor((divz+1)*divlen) - 1
+	if maxp.y < 0 then return end
 
-			-- Determine amount of rocks from perlin noise
-			local amount = math.floor((perlin:get2d({x=x0, y=z0}) + 1) ^ 3)
+	math.randomseed(seed + minp.x + minp.z * 666)
+	local perlin = minetest.get_perlin(666, 3, 0.6, 100)
+	local heightmap = minetest.get_mapgen_object("heightmap")
+	local biomemap = minetest.get_mapgen_object("biomemap")
 
-			-- Find positions for rocks
-			for i=1,amount do
-				local target_x = math.random(x0, x1)
-				local target_z = math.random(z0, z1)
+	-- Assume X and Z lengths are equal
+	local chunk = (maxp.x-minp.x+1) -- Probably 80
+	local divs = 5
+	local divlen = chunk / divs -- 16, if chunk is 80
+	for divx = 0, divs - 1 do
+	for divz = 0, divs - 1 do
+		local x0 = minp.x + math.floor((divx) * divlen)
+		local z0 = minp.z + math.floor((divz) * divlen)
+		local x1 = minp.x + math.floor((divx+1) * divlen) - 1
+		local z1 = minp.z + math.floor((divz+1) * divlen) - 1
 
-				local target_y = heightmap[(target_x-minp.x) + (target_z-minp.z)*chunk + 1] + 1
+		-- Determine amount of rocks from perlin noise
+		local amount = math.floor((perlin:get2d({x=x0, y=z0}) + 1) ^ 3)
 
-				if target_y <= maxp.y and target_y >= minp.y then
-					local target_coord = {x=target_x, y=target_y, z=target_z}
-					local target_name = minetest.get_node(target_coord).name
+		-- Find positions for rocks
+		for i=1,amount do
+			local target_x = math.random(x0, x1)
+			local target_z = math.random(z0, z1)
+			local ground_y = heightmap[(target_x-minp.x) + (target_z-minp.z)*chunk + 1]
 
-					-- Check if the node can be replaced
-					if minetest.registered_nodes[target_name].buildable_to and
-					  (minetest.get_item_group(target_name, "liquid") == 0) then
+			if ground_y < maxp.y and ground_y >= minp.y
+			and minetest.get_node({x=target_x, y=ground_y, z=target_z}).name ~= "air" then
+			-- I check if the node underneath is not air because apparently the ground level
+			-- provided by heightmap does not account for cave genetarion.
+				local target_coord = {x=target_x, y=ground_y + 1, z=target_z}
+				local target_name = minetest.get_node(target_coord).name
+
+				-- Check if the node can be replaced
+				if minetest.registered_nodes[target_name].buildable_to and
+				  (minetest.get_item_group(target_name, "liquid") == 0) then
+				  	if biomemap[(target_x-minp.x) + (target_z-minp.z)*chunk + 1] == 15 then
+						minetest.set_node(target_coord,{name = "loose_rocks:loose_desert_rocks_"..math.random(1,rocks_variants),
+							                        param2 = math.random(0,3)})
+					else
 						minetest.set_node(target_coord,{name = "loose_rocks:loose_rocks_"..math.random(1,rocks_variants),
 							                        param2 = math.random(0,3)})
 					end
 				end
 			end
 		end
-		end
+	end
 	end
 end)
