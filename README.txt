@@ -19,8 +19,11 @@ https://forum.minetest.net/viewtopic.php?f=15&t=6346
 This mod adds Loose Rocks to Minetest.
 
 - Loose Rocks generate naturally on the surface of the world
+- Collect Loose Rocks with bare hands
 - Loose Desert Rocks generate in deserts
 - Craft a Cobblestone with 4 Loose Rocks in a 2x2 grid (same with Desert
 Cobblestone, using Loose Desert Rocks)
+- A Cobblestone will give you 4 Loose Rocks
+- Also great for decoration!
 
 Have fun!
