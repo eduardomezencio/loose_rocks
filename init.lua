@@ -3,8 +3,10 @@
 -- Node Registration
 
 local rocks_variants = 2
+local desert_str_1 = ""
+local desert_str_2 = ""
 
-local function register_loose_rocks(index, desert)
+local function register_nodes(index, desert)
 	local rocks_groups = {oddly_breakable_by_hand = 3, attached_node = 1}
 	if index == 1 then
 		rocks_groups.not_in_creative_inventory = 0
@@ -48,30 +50,43 @@ local function register_loose_rocks(index, desert)
 	})
 end
 
-for i=1, rocks_variants do
-	register_loose_rocks(i, false)
-	register_loose_rocks(i, true)
+for i = 1, rocks_variants do
+	register_nodes(i, false)
+	register_nodes(i, true)
 end
 
 -- Crafts
 
-minetest.register_craft({
-	output = "default:cobble",
-	recipe = {
-		{"loose_rocks:loose_rocks_1", "loose_rocks:loose_rocks_1", ""},
-		{"loose_rocks:loose_rocks_1", "loose_rocks:loose_rocks_1", ""},
-		{"", "", ""},
-	}
-})
+local function register_crafts(desert)
 
-minetest.register_craft({
-	output = "loose_rocks:loose_rocks_1 4",
-	recipe = {
-		{"default:cobble", "", ""},
-		{"", "", ""},
-		{"", "", ""},
-	}
-})
+	if desert then
+		desert_str_1 = "desert_"
+	else
+		desert_str_1 = ""
+	end
+
+	minetest.register_craft({
+		output = "default:"..desert_str_1.."cobble",
+		recipe = {
+			{"loose_rocks:loose_"..desert_str_1.."rocks_1", "loose_rocks:loose_"..desert_str_1.."rocks_1", ""},
+			{"loose_rocks:loose_"..desert_str_1.."rocks_1", "loose_rocks:loose_"..desert_str_1.."rocks_1", ""},
+			{"", "", ""},
+		}
+	})
+
+	minetest.register_craft({
+		output = "loose_rocks:loose_"..desert_str_1.."rocks_1 4",
+		recipe = {
+			{"default:"..desert_str_1.."cobble", "", ""},
+			{"", "", ""},
+			{"", "", ""},
+		}
+	})
+
+end
+
+register_crafts(false)
+register_crafts(true)
 
 -- Map Generation
 
