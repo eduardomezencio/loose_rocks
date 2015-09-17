@@ -104,7 +104,7 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	-- Check mapgen
 	local mgname = minetest.get_mapgen_params().mgname
 
-	math.randomseed(seed + minp.x + minp.z * 666)
+	math.randomseed(seed)
 	local perlin = minetest.get_perlin(666, 3, 0.6, 100)
 	local heightmap = minetest.get_mapgen_object("heightmap")
 	local biomemap = nil
