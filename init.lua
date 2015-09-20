@@ -105,7 +105,7 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	local mgname = minetest.get_mapgen_params().mgname
 
 	math.randomseed(seed)
-	local perlin = minetest.get_perlin(666, 3, 0.6, 100)
+	local perlin = minetest.get_perlin(0, 3, 0.6, 100)
 	local heightmap = minetest.get_mapgen_object("heightmap")
 	local biomemap = nil
 	if mgname == 'v5' or mgname == 'v7' then
